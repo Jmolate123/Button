@@ -1,25 +1,30 @@
-# button.py
+import pygame
 
-class Button:
-    def __init__(self, label, color="grey", width=100, height=50):
-        self.label = label
-        self.color = color
-        self.width = width
-        self.height = height
-    
-    def click(self):
-        return f"Button '{self.label}' clicked!"
+#button class
+class Button():
+	def __init__(self, x, y, image, scale):
+		width = image.get_width()
+		height = image.get_height()
+		self.image = pygame.transform.scale(image, (int(width * scale), int(height * scale)))
+		self.rect = self.image.get_rect()
+		self.rect.topleft = (x, y)
+		self.clicked = False
 
-    def display(self):
-        return f"Displaying a {self.color} button with label '{self.label}' of size {self.width}x{self.height}."
+	def draw(self, surface):
+		action = False
+		#get mouse position
+		pos = pygame.mouse.get_pos()
 
-# Example usage:
-if __name__ == "__main__":
-    # Create a new button
-    my_button = Button(label="Submit", color="blue", width=150, height=50)
-    
-    # Display the button
-    print(my_button.display())
-    
-    # Simulate a button click
-    print(my_button.click())
+		#check mouseover and clicked conditions
+		if self.rect.collidepoint(pos):
+			if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+				self.clicked = True
+				action = True
+
+		if pygame.mouse.get_pressed()[0] == 0:
+			self.clicked = False
+
+		#draw button on screen
+		surface.blit(self.image, (self.rect.x, self.rect.y))
+
+		return action
